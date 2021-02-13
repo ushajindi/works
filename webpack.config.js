@@ -4,16 +4,24 @@ module.exports = {
     entry: "./src/index.js",
     mode: "development",
     output: {
-        filename: "./main.js"
+        //filename: "./dist/main.js"
+        path: path.resolve(__dirname, './dist'),     // путь к каталогу выходных файлов - папка public
+        publicPath: '/',
+        filename: "main.js"
     },
     devServer: {
+        historyApiFallback: true,
         contentBase: path.join(__dirname, "dist"),
         compress: true,
-        port: 9000,
+        port: 4000,
         watchContentBase: true,
         progress: true,
         overlay: true,
-        open: true
+        open: true,
+        inline:true,
+        hot:true,
+        publicPath: '/',
+
     },
 
     module: {
