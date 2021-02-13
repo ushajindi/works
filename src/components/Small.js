@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react"
+import React, {useState, useEffect} from "react"
 import axios from "axios"
 import s from "./style.css"
 
@@ -20,29 +20,35 @@ const json = [
     }
 ]
 const SmallData = () => {
-    const [webData,setWebData]=useState(json)
-    useEffect(()=>{
-        axios.get(url).then(data=>{
-            setWebData(data.data)
+    const [webData, setWebData] = useState(json)
+    const [sortIcon, setSortIcon] = useState({
+        sortName: false,
+        sortId: false,
+        sortEmail: false,
+        sortPhone: false
     })
-    },[])
+    useEffect(() => {
+        axios.get(url).then(data => {
+            setWebData(data.data)
+        })
+    }, [])
 
     const MapData = (data) => {
-        const [vis,setVis]=useState(false)
-        const [id,setId]=useState(null)
+        const [vis, setVis] = useState(false)
+        const [id, setId] = useState(null)
 
-        const getAddress=(idEl)=>{
+        const getAddress = (idEl) => {
             setId(idEl)
             setVis(true)
-            console.log(window.screenTop)
+
 
         }
-        const Address=(el,id)=>{
+        const Address = (el, id) => {
 
-            if (el.id===id){
-                return(
+            if (el.id === id) {
+                return (
                     <div className={s.address}>
-                        Выбран пользователь:  <b>{el.firstName}</b><br/>
+                        Выбран пользователь: <b>{el.firstName}</b><br/>
                         Описание: <br/>
                         <textarea value={el.description}/> <br/>
                         Адрес проживания: <b>{el.address.streetAddress}</b> <br/>
@@ -56,27 +62,71 @@ const SmallData = () => {
         return (data.map((el => {
             return (
                 <div key={el.id}>
-                    <div  onClick={()=>{getAddress(el.id)}} className={s.small__inner}>
-                    <div> {el.id}</div>
-                    <div>{el.firstName}</div>
-                    <div>{el.email}</div>
-                    <div>{el.phone}</div>
-                        {vis&&Address(el,id)}
-                </div>
+                    <div onClick={() => {
+                        getAddress(el.id)
+                    }} className={s.small__inner}>
+                        <div> {el.id}</div>
+                        <div>{el.firstName}</div>
+                        <div>{el.email}</div>
+                        <div>{el.phone}</div>
+                        {vis && Address(el, id)}
+                    </div>
 
                 </div>
 
             )
         })))
     }
+    const SortData = (data, key) => {
+        if (key === "id") {
+            if (!sortIcon.sortId) {
+                setWebData(data.sort((a, b) => a.id - b.id))
+                setSortIcon({
+                    sortName: false,
+                    sortId: true,
+                    sortEmail: false,
+                    sortPhone: false
+                })
+                //console.log(webData)
+
+            }
+        }
+        if (key === "name") {
+            if (!sortIcon.sortName) {
+                setWebData(data.sort((a,b)=>{
+                    if (a.firstName<b.firstName)return -1
+                    if (a.firstName>b.firstName)return 1
+                }))
+                setSortIcon({
+                    sortName: true,
+                    sortId: false,
+                    sortEmail: false,
+                    sortPhone: false
+                })
+            }
+        }
+    }
+
 
     return (
         <div>
             <div className={s.small__inner}>
-                <div> id</div>
-                <div> firstName</div>
-                <div> email</div>
-                <div> phone</div>
+                <div onClick={() => {
+                    SortData(webData, "id")
+                }}>{!sortIcon.sortId ? <i className="bi bi-arrow-bar-up"></i> :
+                    <i className="bi bi-arrow-bar-down"></i>} id
+                </div>
+                <div onClick={() => {
+                    SortData(webData, "name")
+                }}>{!sortIcon.sortName ? <i className="bi bi-arrow-bar-up"></i> :
+                    <i className="bi bi-arrow-bar-down"></i>} firstName
+                </div>
+                <div>{!sortIcon.sortEmail ? <i className="bi bi-arrow-bar-up"></i> :
+                    <i className="bi bi-arrow-bar-down"></i>} email
+                </div>
+                <div>{!sortIcon.sortPhone ? <i className="bi bi-arrow-bar-up"></i> :
+                    <i className="bi bi-arrow-bar-down"></i>} phone
+                </div>
             </div>
             {MapData(webData)}
         </div>
