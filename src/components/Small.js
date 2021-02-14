@@ -22,10 +22,22 @@ const json = [
 const SmallData = () => {
     const [webData, setWebData] = useState(json)
     const [sortIcon, setSortIcon] = useState({
-        sortName: false,
-        sortId: false,
-        sortEmail: false,
-        sortPhone: false
+        sortName: {
+            sorted:false,
+            down:false
+        },
+        sortId: {
+            sorted:false,
+            down:false
+        },
+        sortEmail: {
+            sorted:false,
+            down:false
+        },
+        sortPhone: {
+            sorted:false,
+            down:false
+        },
     })
     useEffect(() => {
         axios.get(url).then(data => {
@@ -79,32 +91,197 @@ const SmallData = () => {
     }
     const SortData = (data, key) => {
         if (key === "id") {
-            if (!sortIcon.sortId) {
+            if (!sortIcon.sortId.sorted) {
                 setWebData(data.sort((a, b) => a.id - b.id))
                 setSortIcon({
-                    sortName: false,
-                    sortId: true,
-                    sortEmail: false,
-                    sortPhone: false
+                    sortName: {
+                        sorted:false,
+                        down:false
+                    },
+                    sortId: {
+                        sorted:true,
+                        down:true
+                    },
+                    sortEmail: {
+                        sorted:false,
+                        down:false
+                    },
+                    sortPhone: {
+                        sorted:false,
+                        down:false
+                    },
                 })
                 //console.log(webData)
 
             }
+            if (sortIcon.sortId.sorted) {
+                setWebData(data.sort((a, b) => a.id - b.id).reverse())
+                setSortIcon({
+                    sortName: {
+                        sorted:false,
+                        down:false
+                    },
+                    sortId: {
+                        sorted:false,
+                        down:false
+                    },
+                    sortEmail: {
+                        sorted:false,
+                        down:false
+                    },
+                    sortPhone: {
+                        sorted:false,
+                        down:false
+                    },
+                })
+            }
+        }
+        if (key === "phone") {
+            console.log("click")
+            if (!sortIcon.sortPhone.sorted) {
+                setWebData(data.sort((a, b) => a.phone[1] - b.phone[1]))
+                setSortIcon({
+                    sortName: {
+                        sorted:false,
+                        down:false
+                    },
+                    sortId: {
+                        sorted:false,
+                        down:false
+                    },
+                    sortEmail: {
+                        sorted:false,
+                        down:false
+                    },
+                    sortPhone: {
+                        sorted:true,
+                        down:true
+                    },
+                })
+            }
+            if (sortIcon.sortPhone.sorted) {
+                setWebData(data.sort((a, b) => a.phone[1] - b.phone[1]).reverse())
+                setSortIcon({
+                    sortName: {
+                        sorted:false,
+                        down:false
+                    },
+                    sortId: {
+                        sorted:false,
+                        down:false
+                    },
+                    sortEmail: {
+                        sorted:false,
+                        down:false
+                    },
+                    sortPhone: {
+                        sorted:false,
+                        down:false
+                    },
+                })
+            }
         }
         if (key === "name") {
-            if (!sortIcon.sortName) {
+            if (!sortIcon.sortName.sorted) {
                 setWebData(data.sort((a,b)=>{
                     if (a.firstName<b.firstName)return -1
                     if (a.firstName>b.firstName)return 1
                 }))
                 setSortIcon({
-                    sortName: true,
-                    sortId: false,
-                    sortEmail: false,
-                    sortPhone: false
+                                    sortName: {
+                                        sorted:true,
+                                        down:true
+                                    },
+                                    sortId: {
+                                        sorted:false,
+                                        down:false
+                                    },
+                                    sortEmail: {
+                                        sorted:false,
+                                        down:false
+                                    },
+                                    sortPhone: {
+                                        sorted:false,
+                                        down:false
+                                    },
                 })
             }
-        }
+            if (sortIcon.sortName.sorted){
+                setWebData(data.sort((a,b)=>{
+                    if (a.firstName<b.firstName)return -1
+                    if (a.firstName>b.firstName)return 1
+                }).reverse())
+                setSortIcon({
+                    sortName: {
+                        sorted:false,
+                        down:false
+                    },
+                    sortId: {
+                        sorted:false,
+                        down:false
+                    },
+                    sortEmail: {
+                        sorted:false,
+                        down:false
+                    },
+                    sortPhone: {
+                        sorted:false,
+                        down:false
+                    },
+                })
+            }
+      }
+        if (key === "email") {
+            if (!sortIcon.sortEmail.sorted) {
+                //setWebData(webData.map(el=>{el.email.toLowerCase()}))
+                setWebData(data.sort((a,b)=>{
+                    if (a.email<b.email)return -1
+                    if (a.email>b.email)return 1
+                }))
+                setSortIcon({
+                                    sortName: {
+                                        sorted:true,
+                                        down:true
+                                    },
+                                    sortId: {
+                                        sorted:false,
+                                        down:false
+                                    },
+                                    sortEmail: {
+                                        sorted:true,
+                                        down:true
+                                    },
+                                    sortPhone: {
+                                        sorted:false,
+                                        down:false
+                                    },
+                })
+            }
+            if (sortIcon.sortEmail.sorted){
+                setWebData(data.sort((a,b)=>{
+                    if (a.email<b.email)return -1
+                    if (a.email>b.email)return 1
+                }).reverse())
+                setSortIcon({
+                    sortName: {
+                        sorted:false,
+                        down:false
+                    },
+                    sortId: {
+                        sorted:false,
+                        down:false
+                    },
+                    sortEmail: {
+                        sorted:false,
+                        down:false
+                    },
+                    sortPhone: {
+                        sorted:false,
+                        down:false
+                    },
+                })
+            }
+      }
     }
 
 
@@ -113,18 +290,18 @@ const SmallData = () => {
             <div className={s.small__inner}>
                 <div onClick={() => {
                     SortData(webData, "id")
-                }}>{!sortIcon.sortId ? <i className="bi bi-arrow-bar-up"></i> :
+                }}>{!sortIcon.sortId.down ? <i className="bi bi-arrow-bar-up"></i> :
                     <i className="bi bi-arrow-bar-down"></i>} id
                 </div>
                 <div onClick={() => {
                     SortData(webData, "name")
-                }}>{!sortIcon.sortName ? <i className="bi bi-arrow-bar-up"></i> :
+                }}>{!sortIcon.sortName.down ? <i className="bi bi-arrow-bar-up"></i> :
                     <i className="bi bi-arrow-bar-down"></i>} firstName
                 </div>
-                <div>{!sortIcon.sortEmail ? <i className="bi bi-arrow-bar-up"></i> :
+                <div onClick={()=>{SortData(webData,"email")}}>{!sortIcon.sortEmail.down ? <i className="bi bi-arrow-bar-up"></i> :
                     <i className="bi bi-arrow-bar-down"></i>} email
                 </div>
-                <div>{!sortIcon.sortPhone ? <i className="bi bi-arrow-bar-up"></i> :
+                <div onClick={()=>{SortData(webData,"phone")}}>{!sortIcon.sortPhone.down ? <i className="bi bi-arrow-bar-up"></i> :
                     <i className="bi bi-arrow-bar-down"></i>} phone
                 </div>
             </div>
