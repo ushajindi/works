@@ -60,3 +60,9 @@ header{
 .small__inner i {
     padding-right: 10px;
 }
+.loading{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-top: 10%;
+}
