@@ -274,7 +274,16 @@ const App=(props)=>{
                 }}/>
                 <Route path={"/big"} component={()=>{
                     return(
-                        <BigData/>
+                        <BigData smallData={{
+                            isLoading:isLoading,
+                            setIsLoading:setIsLoading,
+                            start:setGetDataStart,
+                            getStart:getDataStart.getSmallData,
+                            webData:smallData,
+                            setWebData:setSmallData,
+                            MapData,
+                            SortData
+                        }}/>
                     )
                 }}/>
                 <Route path={"/small"} component={()=>{
