@@ -66,3 +66,13 @@ header{
     justify-content: center;
     margin-top: 10%;
 }
+.red{
+    color: darkred;
+}
+.big__inner{
+display: flex;
+    justify-content: center;
+}
+.pagination{
+    padding-bottom: 20px;
+}

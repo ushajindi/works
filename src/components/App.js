@@ -5,7 +5,7 @@ import Home from "./Home";
 import SmallData from "./Small";
 import BigData from "./Big";
 import axios from "axios"
-
+const bigDataUrl = "http://www.filltext.com/?rows=1000&id={number|1000}&firstName={firstName}&delay=3&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}"
 const smallDataUrl = "http://www.filltext.com/?rows=32&id={number|1000}&firstName={firstName}&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}"
 
 const App=(props)=>{
@@ -15,7 +15,7 @@ const App=(props)=>{
         getSmallData:false,
         getBigData:false
     })
-    const [bigData,setbigData]=useState()
+    const [bigData,setBigData]=useState()
     useEffect(()=>{
         if (getDataStart.getSmallData){
             axios.get(smallDataUrl).then(data => {
@@ -23,7 +23,13 @@ const App=(props)=>{
                 setIsLoading(false)
             })
         }
-    },[getDataStart])
+        if (getDataStart.getBigData){
+            axios.get(bigDataUrl).then(data=>{
+                setBigData(data.data)
+                setIsLoading(false)
+            })
+        }
+    },[getDataStart.getSmallData,getDataStart.getBigData])
     const MapData = (data) => {
         const [vis, setVis] = useState(false)
         const [id, setId] = useState(null)
@@ -38,7 +44,7 @@ const App=(props)=>{
 
             if (el.id === id) {
                 return (
-                    <div className={s.address}>
+                    <div key={el.id} className={s.address}>
                         Выбран пользователь: <b>{el.firstName}</b><br/>
                         Описание: <br/>
                         <textarea value={el.description}/> <br/>
@@ -52,7 +58,7 @@ const App=(props)=>{
         }
         return (data.map((el => {
             return (
-                <div key={el.id}>
+                <div>
                     <div onClick={() => {
                         getAddress(el.id)
                     }} className={s.small__inner}>
@@ -274,13 +280,11 @@ const App=(props)=>{
                 }}/>
                 <Route path={"/big"} component={()=>{
                     return(
-                        <BigData smallData={{
+                        <BigData bigData={{
                             isLoading:isLoading,
-                            setIsLoading:setIsLoading,
                             start:setGetDataStart,
-                            getStart:getDataStart.getSmallData,
-                            webData:smallData,
-                            setWebData:setSmallData,
+                            getStart:getDataStart.getBigData,
+                            webData:bigData,
                             MapData,
                             SortData
                         }}/>
